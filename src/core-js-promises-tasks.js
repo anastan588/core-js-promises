@@ -59,7 +59,7 @@ function getPromiseResult(source) {
  * [Promise.reject(1), Promise.reject(2), Promise.reject(3)]    => Promise rejected
  */
 function getFirstResolvedPromiseResult(promises) {
-  return Promise.race(promises);
+  return Promise.any(promises);
 }
 
 /**
@@ -150,8 +150,18 @@ function getAllResult(promises) {
  * [promise1, promise4, promise3] => Promise.resolved('104030')
  * [promise1, promise4, promise3, promise2] => Promise.resolved('10403020')
  */
-function queuePromises(/* promises */) {
-  throw new Error('Not implemented');
+async function queuePromises(promises) {
+  const results = await promises
+    .reduce(async (accumulatorPromise, currentPromise) => {
+      const result = await accumulatorPromise;
+      const value = await currentPromise;
+      return result + value;
+    }, Promise.resolve(''))
+    .then((value) => {
+      return value;
+    })
+    .finally(() => {});
+  return results;
 }
 
 module.exports = {
