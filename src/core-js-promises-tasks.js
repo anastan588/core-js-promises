@@ -152,8 +152,8 @@ function getAllResult(promises) {
  */
 async function queuePromises(promises) {
   const results = await promises
-    .reduce(async (accumulatorPromise, currentPromise) => {
-      const result = await accumulatorPromise;
+    .reduce(async (accPromise, currentPromise) => {
+      const result = await accPromise;
       const value = await currentPromise;
       return result + value;
     }, Promise.resolve(''))
